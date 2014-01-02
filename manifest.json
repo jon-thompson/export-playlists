@@ -1,0 +1,30 @@
+{
+  "AppName": {
+    "en": "Export Playlists"
+  },
+  "BundleIdentifier": "export-playlists",
+  "AppDescription": {
+    "en": "A Spotify app that lets you print a list of all your playlists."
+  },
+  "AcceptedLinkTypes": [
+    "playlist"
+  ],
+  "BundleType": "Application",
+  "BundleVersion": "0.2",
+  "DefaultTabs": [
+    {
+      "arguments": "index",
+      "title": {
+        "en": "Export Playlists"
+      }
+    }
+  ],
+  "Dependencies": {
+    "api": "1.38.0",
+    "views": "1.18.1"
+  },
+  "SupportedLanguages": [
+    "en"
+  ],
+  "VendorIdentifier": "com.spotify"
+}

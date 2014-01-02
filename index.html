@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <button onclick="window.print()">Print</button>
+        <div id="playlists">
+        </div>
+
+    <script>
+        require(['$api/models', '$api/library'], function(models, library) {
+            function renderPlaylistFromUri (uri) {
+                models.Playlist.fromURI(uri)
+                    .load(['name', 'tracks'])
+                    .done(renderPlaylist);
+            }
+
+            function renderPlaylist(p) {
+                var div = document.createElement('div'),
+                    html = '<h2>' + p.name.decodeForHtml() + '</h2>';
+
+                html += '<table><thead><tr><th>Track</th><th>Artists</th></tr></thead>'
+
+                models.Promise.join([
+                    p.tracks.snapshot()
+                ]).done(function (result) {
+                    var tracks = result[0].toArray();
+
+                    for(var i=0; i<tracks.length; i++){
+                        html += '<tr>';
+                        html += '<td>' + tracks[i].name + '</td>';
+                        html += '<td>'
+                        for (var j=0; j<tracks[i].artists.length; j++) {
+                            html += tracks[i].artists[j].name + ' ';
+                        }
+                        html += '</td>';
+                        html += '</tr>';
+                    }
+
+                    html += '</table>'
+
+                    div.innerHTML = html;
+                    document.getElementById('playlists').appendChild(div);
+                });
+            }
+
+            library.Library.forCurrentUser()
+                .load('playlists')
+                .done(function (library) {
+                    models.Promise.join([
+                            library.playlists.snapshot()
+                        ]).done(function (result) {
+                            var playlists = result[0].toArray();
+                            for (var i = 0; i < playlists.length; i++) {
+                                if (playlists[i] === null) {
+                                    break;
+                                }
+
+                                renderPlaylistFromUri(playlists[i].uri);
+                            };
+                        });
+
+                });
+        });
+    </script>
+    </body>
+</html>
